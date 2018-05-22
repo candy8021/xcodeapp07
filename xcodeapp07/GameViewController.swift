@@ -112,20 +112,18 @@ class GameViewController: UIViewController {
         print (number)
         
         var count = number
-        Player1CardsChoice[count].text = cards[distribution.nextInt()]
+        
         currentPoints += pointsJudgment(card: Player1CardsChoice[count].text!)
+        
         if Player1CardsChoice[count].text!.contains("K") {
             currentPoints=99
         }
         else if Player1CardsChoice[count].text!.contains("♠︎A") {
             currentPoints=0
         }
-        else if Player2CardsChoice[count].text!.contains("10") {
-            addminus10()
-        }
-        else if Player2CardsChoice[count].text!.contains("Q") {
-            addminus20 ()
-        }
+        //玩家點選後系統隨機產生下一張牌
+        Player1CardsChoice[count].text = cards[distribution.nextInt()]
+        
         Points.text = "\(currentPoints)"
         
         if currentPoints > 99 {
@@ -139,7 +137,7 @@ class GameViewController: UIViewController {
         print (number)
         
         var count = number
-        Player2CardsChoice[count].text = cards[distribution.nextInt()]
+        
         currentPoints += pointsJudgment(card: Player2CardsChoice[count].text!)
         if Player2CardsChoice[count].text!.contains("K") {
             currentPoints=99
@@ -147,12 +145,9 @@ class GameViewController: UIViewController {
         else if Player2CardsChoice[count].text!.contains("♠︎A") {
             currentPoints=0
         }
-        else if Player2CardsChoice[count].text!.contains("10") {
-            addminus10()
-        }
-        else if Player2CardsChoice[count].text!.contains("Q") {
-            addminus20 ()
-        }
+        //玩家點選後系統隨機產生下一張牌
+        Player2CardsChoice[count].text = cards[distribution.nextInt()]
+        
         Points.text = "\(currentPoints)"
         
         if currentPoints > 99 {
@@ -177,15 +172,19 @@ class GameViewController: UIViewController {
         player2CardsView[4].isHidden = false
         
         if player2turn.isHidden == true {
-            
             player1turn.isHidden = true
             player2turn.isHidden = false
         }else{
-            
             player1turn.isHidden = false
             player2turn.isHidden = true
         }
-        
+    }
+    
+    func changeplayer () {
+        let controller = UIAlertController(title: "換對方出牌", message: "請點選Next鍵！", preferredStyle: UIAlertControllerStyle.alert)
+        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.default)
+        controller.addAction(action)
+        show(controller, sender: nil)
     }
     
     //  判斷數字
@@ -193,16 +192,16 @@ class GameViewController: UIViewController {
         
         if card.contains("A") {
             point = 1
-        } else if card.contains("♠︎A") {
-            point = 0
         } else if card.contains("2") {
             point = 2
         } else if card.contains("3") {
             point = 3
         } else if card.contains("4") {
-            point = 0
+             point = 0
+            changeplayer ()
         } else if card.contains("5") {
             point = 0
+            changeplayer ()
         } else if card.contains("6") {
             point = 6
         } else if card.contains("7") {
@@ -213,12 +212,12 @@ class GameViewController: UIViewController {
             point = 9
         } else if card.contains("10") {
             point = 0
+            addminus10()
         } else if card.contains("J") {
             point = 0
         } else if card.contains("Q") {
             point = 0
-        } else if card.contains("K") {
-            point = 0
+            addminus20()
         }
         return point
     }
@@ -235,10 +234,6 @@ class GameViewController: UIViewController {
     func addminus10 () {
         let actionSheet=UIAlertController(title:"加or減",message:"選擇你想要增加或減少點數",preferredStyle: .actionSheet)
         
-        actionSheet.addAction(UIAlertAction(title:"Add",style: .default))
-        actionSheet.addAction(UIAlertAction(title:"Minus",style: .default))
-        self.present(actionSheet,animated: true)
-        
         func add(_ act:UIAlertAction!){
             currentPoints=currentPoints+10
             Points.text = "\(currentPoints)"
@@ -247,13 +242,13 @@ class GameViewController: UIViewController {
             currentPoints=currentPoints-10
             Points.text = "\(currentPoints)"
         }
+        actionSheet.addAction(UIAlertAction(title:"Add",style: .default,handler: add))
+        actionSheet.addAction(UIAlertAction(title:"Minus",style: .default,handler: minus))
+        self.present(actionSheet,animated: true)
+        
     }
     func addminus20 () {
         let actionSheet=UIAlertController(title:"加or減",message:"選擇你想要增加或減少點數",preferredStyle: .actionSheet)
-        
-        actionSheet.addAction(UIAlertAction(title:"Add",style: .default))
-        actionSheet.addAction(UIAlertAction(title:"Minus",style: .default))
-        self.present(actionSheet,animated: true)
         
         func add(_ act:UIAlertAction!){
             currentPoints=currentPoints+20
@@ -263,6 +258,11 @@ class GameViewController: UIViewController {
             currentPoints=currentPoints-20
             Points.text = "\(currentPoints)"
         }
+        
+        actionSheet.addAction(UIAlertAction(title:"Add",style: .default,handler: add))
+        actionSheet.addAction(UIAlertAction(title:"Minus",style: .default,handler: minus))
+        self.present(actionSheet,animated: true)
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
